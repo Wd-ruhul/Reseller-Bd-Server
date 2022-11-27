@@ -28,7 +28,9 @@ async function run() {
 
     const categoryCollection = client.db("reselldotcom").collection("category");
 
- 
+    const usersCollection = client.db("reselldotcom").collection("users");
+
+    const sellerCollection = client.db("reselldotcom").collection("sellers");
 
     app.post("/addproduct", async (req, res) => {
       const products = req.body;
@@ -36,6 +38,23 @@ async function run() {
 
       const result = await productCollection.insertOne(products);
       res.send(result);
+    });
+
+    //* Insert users in database
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const category = req.body.category
+      
+
+      if (category === 'seller') {
+        const result = await sellerCollection.insertOne(user);
+         res.send(result);
+      } else {
+        const result = await usersCollection.insertOne(user);
+         res.send(result);
+      }
+     
+      
     });
 
     //* read all category data
@@ -49,7 +68,7 @@ async function run() {
     //* specific  data read services
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id)
+      console.log(id);
       const query = { id: id };
       const service = await productCollection.find(query).toArray();
       res.send(service);
