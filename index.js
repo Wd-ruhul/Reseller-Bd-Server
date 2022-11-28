@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const JWT = require("jsonwebtoken")
 
 require("dotenv").config();
 const app = express();
@@ -32,6 +33,10 @@ async function run() {
 
     const sellerCollection = client.db("reselldotcom").collection("sellers");
 
+    const bookingCollection = client
+      .db("reselldotcom")
+      .collection("booked_products");
+
     app.post("/addproduct", async (req, res) => {
       const products = req.body;
       console.log(products);
@@ -43,18 +48,15 @@ async function run() {
     //* Insert users in database
     app.post("/users", async (req, res) => {
       const user = req.body;
-      const category = req.body.category
-      
+      const category = req.body.category;
 
-      if (category === 'seller') {
+      if (category === "seller") {
         const result = await sellerCollection.insertOne(user);
-         res.send(result);
+        res.send(result);
       } else {
         const result = await usersCollection.insertOne(user);
-         res.send(result);
+        res.send(result);
       }
-     
-      
     });
 
     //* read all category data
@@ -72,6 +74,16 @@ async function run() {
       const query = { id: id };
       const service = await productCollection.find(query).toArray();
       res.send(service);
+    });
+
+    //* insert booking product data in db
+
+    app.post("/booking", async (req, res) => {
+      const bookingModal = req.body;
+      // console.log(bookingModal)
+
+      const result = await bookingCollection.insertOne(bookingModal);
+      res.send(result);
     });
   } finally {
     // await client.close();
