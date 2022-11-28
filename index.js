@@ -85,6 +85,16 @@ async function run() {
       const result = await bookingCollection.insertOne(bookingModal);
       res.send(result);
     });
+
+    //* Get My Order product data from db
+    app.get("/bookingg", async (req, res) => {
+      const email = req.query.email;
+      console.log("r", email);
+      const query = { email: email };
+
+      const booking = await bookingCollection.find(query).toArray();
+      res.send(booking);
+    });
   } finally {
     // await client.close();
   }
