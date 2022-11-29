@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const JWT = require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 
 require("dotenv").config();
 const app = express();
@@ -57,6 +57,18 @@ async function run() {
         const result = await usersCollection.insertOne(user);
         res.send(result);
       }
+    });
+    //* Get All users from database
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const users = await usersCollection.find(query).toArray();
+      res.send(users);
+    });
+    //* Get All users from database
+    app.get("/sellers", async (req, res) => {
+      const query = {};
+      const sellers = await sellerCollection.find(query).toArray();
+      res.send(sellers);
     });
 
     //* read all category data
