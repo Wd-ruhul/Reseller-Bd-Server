@@ -71,6 +71,13 @@ async function run() {
       res.send(sellers);
     });
 
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
+
     //* read all category data
     app.get("/category", async (req, res) => {
       const query = {};
@@ -98,7 +105,7 @@ async function run() {
       res.send(result);
     });
 
-    //* Get My Order product data from db
+    //* Get My Order  data from db
     app.get("/bookingg", async (req, res) => {
       const email = req.query.email;
       console.log("r", email);
@@ -106,6 +113,26 @@ async function run() {
 
       const booking = await bookingCollection.find(query).toArray();
       res.send(booking);
+    });
+
+    //* Get My products  data from db
+    app.get("/myproducts", async (req, res) => {
+      const email = req.query.email;
+      console.log("email", email);
+      const query = { email: email };
+
+      const result = await productCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //* data delete
+    app.delete("/myproduct/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("delete", id);
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      console.log(result);
+      res.send(result);
     });
   } finally {
     // await client.close();
