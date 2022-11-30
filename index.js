@@ -58,6 +58,13 @@ async function run() {
         res.send(result);
       }
     });
+    //* Insert google users in database
+    app.post("/gusers", async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+        res.send(result);
+      
+    });
     //* Get All users from database
     app.get("/users", async (req, res) => {
       const query = {};
